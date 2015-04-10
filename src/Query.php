@@ -85,6 +85,20 @@ class Query
     /**
      * Comment
      *
+     * @var string
+     */
+    protected $deactivation_time;
+
+    /**
+     * Comment
+     *
+     * @var string
+     */
+    protected $deactivation_reason;
+
+    /**
+     * Comment
+     *
      * @var integer
      */
     protected $limit = 100;
@@ -339,6 +353,54 @@ class Query
     /**
      * @TODO Comment this!
      *
+     * @return string
+     */
+    public function getDeactivationReason()
+    {
+        return $this->deactivation_reason;
+    }
+
+    /**
+     * @TODO Comment this!
+     *
+     * @param string $deactivation_reason
+     *
+     * @return $this
+     */
+    public function setDeactivationReason($deactivation_reason)
+    {
+        $this->deactivation_reason = $deactivation_reason;
+
+        return $this;
+    }
+
+    /**
+     * @TODO Comment this!
+     *
+     * @return string
+     */
+    public function getDeactivationTime()
+    {
+        return $this->deactivation_time;
+    }
+
+    /**
+     * @TODO Comment this!
+     *
+     * @param string $deactivation_time
+     *
+     * @return $this
+     */
+    public function setDeactivationTime($deactivation_time)
+    {
+        $this->deactivation_time = $deactivation_time;
+
+        return $this;
+    }
+
+    /**
+     * @TODO Comment this!
+     *
      * @return integer
      */
     public function getLimit()
@@ -402,5 +464,15 @@ class Query
         }
 
         return $resp;
+    }
+
+    /**
+     * Update skip to get more results
+     *
+     * @TODO Refactor to use the total_count from a result, but for now cheat.
+     */
+    public function next()
+    {
+        $this->setSkip($this->getSkip() + $this->getLimit());
     }
 }
