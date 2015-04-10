@@ -92,7 +92,7 @@ class ZipRecruiterApi
         $this->response = $this->client->post('/subscriber', ['body' => $request]);
 
         if (201 == $this->response->getStatusCode()) {
-            return json_decode($this->response->getBody()->getContents(), true);
+            return $this->response->json();
         }
 
         return false;
@@ -133,7 +133,7 @@ class ZipRecruiterApi
         $this->response = $this->client->delete($url);
 
         if (200 == $this->response->getStatusCode()) {
-            return json_decode($this->response->getBody()->getContents(), true);
+            return $this->response->json();
         }
 
         return false;
