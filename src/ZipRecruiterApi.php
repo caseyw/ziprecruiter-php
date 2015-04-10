@@ -89,7 +89,7 @@ class ZipRecruiterApi
             $request['create_time'] = $createTime;
         }
 
-        $this->response = $this->client->post('/subscriber', ['body' => $request]);
+        $this->response = $this->client->post('subscriber', ['body' => $request]);
 
         if (201 == $this->response->getStatusCode()) {
             return $this->response->json();
@@ -104,19 +104,33 @@ class ZipRecruiterApi
      *
      * @param \ZipRecruiter\Query $query
      *
-     * @return bool|StreamInterface|null
+     * @return bool|StreamInterface|array
      */
     public function query(Query $query)
     {
-        $this->response = $this->client->get('/subscriber', [
-            'query' => $query->toArray()
-        ]);
+        $data = [];
+        $paging = true;
 
-        if (200 == $this->response->getStatusCode()) {
-            return json_decode($this->response->getBody()->getContents(), true);
+        while ($paging) {
+
+            $response = $this->client->get('subscriber', [
+                'query' => $query->toArray()
+            ]);
+
+            $json = $response->json();
+
+            if (count($json['results']) == 0 || $json['total_count'] == 1) {
+                $paging = false;
+            }
+
+            foreach ($json['results'] as $result) {
+                $data[] = $result;
+            }
+            $query->next();
+
         }
 
-        return false;
+        return $data;
     }
 
     /**
@@ -128,7 +142,7 @@ class ZipRecruiterApi
      */
     public function deactivate($id)
     {
-        $url = '/subscribe/' . $id;
+        $url = 'subscribe/' . $id;
 
         $this->response = $this->client->delete($url);
 

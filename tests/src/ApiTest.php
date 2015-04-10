@@ -1,7 +1,10 @@
 <?php
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Message\Response;
 use GuzzleHttp\Ring\Client\MockHandler;
+use GuzzleHttp\Stream\Stream;
+use GuzzleHttp\Subscriber\Mock;
 use ZipRecruiter\Query;
 use ZipRecruiter\ZipRecruiterApi;
 
@@ -118,6 +121,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $query->setIpAddress('8.8.8.8');
         $query->setStatus('deactivated');
         $query->setBrand('example');
+        $query->setDeactivationTime('2015-04-09 14:50:30');
+        $query->setDeactivationReason('unsubscribe');
 
         $this->assertEquals('12345678', $query->getId());
         $this->assertEquals('johndoe@example.com', $query->getEmail());
@@ -128,7 +133,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('8.8.8.8', $query->getIpAddress());
         $this->assertEquals('deactivated', $query->getStatus());
         $this->assertEquals('example', $query->getBrand());
-
+        $this->assertEquals('2015-04-09 14:50:30', $query->getDeactivationTime());
+        $this->assertEquals('unsubscribe', $query->getDeactivationReason());
 
         $response = [
             'body' => $this->generateQueryJsonResponse($query),
@@ -140,17 +146,12 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $api = new ZipRecruiterApi($client);
         $resp = $api->query($query);
 
-        $this->assertEquals($query->getLimit(), $resp['limit']);
-        $this->assertEquals($query->getSkip(), $resp['offset']);
-
-        $resp = $resp['results'];
-
-        $this->assertEquals($query->getEmailMd5(), $resp['email_md5']);
-        $this->assertNull($resp['deactivation_reason']);
-        $this->assertEquals($query->getCreateTime(), $resp['create_time']);
-        $this->assertEquals($query->getBrand(), $resp['brand']);
-        $this->assertEquals($query->getId(), $resp['id']);
-        $this->assertNull($resp['deactivation_time']);
+        $this->assertEquals($query->getEmailMd5(), $resp[0]['email_md5']);
+        $this->assertEquals($query->getDeactivationReason(), $resp[0]['deactivation_reason']);
+        $this->assertEquals($query->getDeactivationTime(), $resp[0]['deactivation_time']);
+        $this->assertEquals($query->getCreateTime(), $resp[0]['create_time']);
+        $this->assertEquals($query->getBrand(), $resp[0]['brand']);
+        $this->assertEquals($query->getId(), $resp[0]['id']);
     }
 
     /**
@@ -165,12 +166,14 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $response = [
             'limit' => $query->getLimit(),
             'results' => [
-                'email_md5' => $query->getEmailMd5(),
-                'deactivation_reason' => null,
-                'create_time' => $query->getCreateTime(),
-                'brand' => $query->getBrand(),
-                'id' => $query->getId(),
-                'deactivation_time' => null
+                0 => [
+                    'email_md5' => $query->getEmailMd5(),
+                    'deactivation_reason' => $query->getDeactivationReason(),
+                    'create_time' => $query->getCreateTime(),
+                    'brand' => $query->getBrand(),
+                    'id' => $query->getId(),
+                    'deactivation_time' => $query->getDeactivationTime()
+                ]
             ],
             'offset' => $query->getSkip(),
             'total_count' => '1'
@@ -202,4 +205,33 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('12345678', $resp['id']);
         $this->assertEquals('2015-04-09T17:00:00', $resp['deactivation_time']);
     }
+
+    /**
+     * Test Can Get Multiple Result Pages
+     */
+    public function testCanGetMultipleResultPages()
+    {
+        $client = new Client();
+
+        $responses = [
+            new Response(200, [], Stream::factory('{"limit":"1","results":[{"email_md5":"12345678901234567890123456789012","deactivation_reason":"inactivity-never-clicked-14-day","create_time":"2015-01-01T02:31:25","brand":"example1","id":"12345678","deactivation_time":"2015-04-10T23:53:31"}],"offset":"0","total_count":"3"}')),
+            new Response(200, [], Stream::factory('{"limit":"1","results":[{"email_md5":"12345678901234567890123456789012","deactivation_reason":"inactivity-120-day","create_time":"2015-01-01T00:24:21","brand":"example2","id":"23456789","deactivation_time":"2015-04-10T23:50:02"}],"offset":"1","total_count":"3"}')),
+            new Response(200, [], Stream::factory('{"limit":"1","results":[{"email_md5":"12345678901234567890123456789012","deactivation_reason":"inactivity-never-cli","create_time":"2015-01-01T16:00:24","brand":"example3","id":"34567890","deactivation_time":"2015-04-10T00:13:55"}],"offset":"2","total_count":"3"}')),
+            new Response(200, [], Stream::factory('{"limit":"1","results":[],"offset":"3","total_count":"3"}')),
+        ];
+
+        $mock = new Mock($responses);
+        $client->getEmitter()->attach($mock);
+
+        $query = new Query();
+        $query->setDeactivationTime('2015-04-10 10:30:30');
+        $query->setLimit(1);
+        $query->setSkip(0);
+
+        $api = new ZipRecruiterApi($client);
+        $results = $api->query($query, true);
+
+        $this->assertEquals(3, count($results));
+    }
+
 }
