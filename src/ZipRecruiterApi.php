@@ -153,4 +153,36 @@ class ZipRecruiterApi
         return false;
     }
 
+    /**
+     * Create Job Search for $subscriptionId
+     *
+     * @param $subscriptionId
+     * @param $search
+     * @param $location
+     * @param $createTime
+     *
+     * @return bool|mixed
+     */
+    public function createJobSearch($subscriptionId, $search, $location, $createTime)
+    {
+        $request = [
+            'search' => $search,
+            'location' => $location,
+            'create_time' => $createTime,
+        ];
+
+        $this->response = $this->client->post(
+            'subscriber/' . $subscriptionId . '/searches',
+            [
+                'body' => $request
+            ]
+        );
+
+        if (201 == $this->response->getStatusCode()) {
+            return $this->response->json();
+        }
+
+        return false;
+    }
+
 }

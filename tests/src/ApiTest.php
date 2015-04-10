@@ -234,4 +234,38 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, count($results));
     }
 
+    /**
+     * Test Can Create Job Search For Subscriber
+     */
+    public function testCanCreateJobSearchForSubscriber()
+    {
+        $client = new Client();
+
+        $json = '{"search":"Test","location":"Canton, OH","deactivation_reason":null,"create_time":"2015-04-10T07:00:00","id":"12345678","deactivation_time":null}';
+
+        $responses = [
+            new Response(201, [], Stream::factory($json)),
+        ];
+
+        $mock = new Mock($responses);
+        $client->getEmitter()->attach($mock);
+
+        $subscriberId = '09876543';
+        $search = 'Test';
+        $location = 'Canton, OH';
+        $createTime = '2015-04-10T07:00:00';
+        $searchId = '12345678';
+
+        $api = new ZipRecruiterApi($client);
+        $results = $api->createJobSearch($subscriberId, $search, $location, $createTime);
+
+        $this->assertEquals(json_decode($json, true), $results);
+        $this->assertEquals($search, $results['search']);
+        $this->assertEquals($location, $results['location']);
+        $this->assertNull($results['deactivation_reason']);
+        $this->assertEquals($createTime, $results['create_time']);
+        $this->assertEquals($searchId, $results['id']);
+        $this->assertNull($results['deactivation_time']);
+    }
+
 }
