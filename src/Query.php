@@ -20,98 +20,99 @@ class Query
     protected $id;
 
     /**
-     * Comment
+     * Subscriber Email
      *
      * @var string
      */
     protected $email;
 
     /**
-     * Comment
+     * Subscriber Email in md5 hash
      *
      * @var string
      */
     protected $emailMd5;
 
     /**
-     * Comment
+     * Subscriber Name
      *
      * @var string
      */
     protected $name;
 
     /**
-     * Comment
+     * Created Time
      *
      * @var string
      */
     protected $create_time;
 
     /**
-     * Comment
+     * Search
      *
      * @var string
      */
     protected $search;
 
     /**
-     * Comment
+     * Location, can be City, ST, STATE or Postal Code
      *
      * @var string
      */
     protected $location;
 
     /**
-     * Comment
+     * IP Address
      *
      * @var string
      */
     protected $ip_address;
 
     /**
-     * Comment
+     * Subscription Status
      *
      * @var string
      */
     protected $status;
 
     /**
-     * Comment
+     * Brand, which is domain without tld
+     * e.g. www.example.com => example
      *
      * @var string
      */
     protected $brand;
 
     /**
-     * Comment
+     * Subscription Deactivation Time
      *
      * @var string
      */
     protected $deactivation_time;
 
     /**
-     * Comment
+     * Subscription Deactivation Reason
      *
      * @var string
      */
     protected $deactivation_reason;
 
     /**
-     * Comment
+     * Limit per page
      *
      * @var integer
      */
     protected $limit = 100;
 
     /**
-     * Comment
+     * How many to skip, used for paging
      *
      * @var integer
      */
     protected $skip = 0;
 
     /**
-     * @TODO Comment this!
+     * Get Create Time
      *
      * @return string
      */
@@ -121,7 +122,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Create Time
      *
      * @param string $create_time
      *
@@ -135,7 +136,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Email
      *
      * @return string
      */
@@ -145,7 +146,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Email
      *
      * @param string $email
      *
@@ -159,7 +160,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Email MD5
      *
      * @return string
      */
@@ -169,7 +170,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Email MD5
      *
      * @param string $emailMd5
      *
@@ -183,7 +184,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get ID
      *
      * @return string
      */
@@ -193,7 +194,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set ID
      *
      * @param string $id
      *
@@ -207,7 +208,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get IP Address
      *
      * @return string
      */
@@ -217,7 +218,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set IP Address
      *
      * @param string $ip_address
      *
@@ -231,7 +232,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Location
      *
      * @return string
      */
@@ -241,7 +242,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Location
      *
      * @param string $location
      *
@@ -255,7 +256,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Name
      *
      * @return string
      */
@@ -265,7 +266,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Name
      *
      * @param string $name
      *
@@ -279,7 +280,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Search
      *
      * @return string
      */
@@ -289,7 +290,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Search
      *
      * @param string $search
      *
@@ -303,7 +304,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Status
      *
      * @return string
      */
@@ -313,7 +314,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Status
      *
      * @param string $status
      *
@@ -327,7 +328,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Brand
      *
      * @return string
      */
@@ -337,7 +338,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Brand
      *
      * @param string $brand
      *
@@ -351,7 +352,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Deactivation Reason
      *
      * @return string
      */
@@ -361,7 +362,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Deactivation Reason
      *
      * @param string $deactivation_reason
      *
@@ -375,7 +376,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Deactivation Time
      *
      * @return string
      */
@@ -385,7 +386,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Deactivation Time
      *
      * @param string $deactivation_time
      *
@@ -399,7 +400,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Limit
      *
      * @return integer
      */
@@ -409,7 +410,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Limit
      *
      * @param integer $limit
      *
@@ -423,7 +424,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Get Skip
      *
      * @return integer
      */
@@ -433,7 +434,7 @@ class Query
     }
 
     /**
-     * @TODO Comment this!
+     * Set Skip
      *
      * @param integer $skip
      *
