@@ -6,6 +6,13 @@ class Query
 {
 
     /**
+     * Expand API results by default
+     *
+     * @var bool
+     */
+    protected $expand_results = 1;
+
+    /**
      * Unique identifier for this subscriber
      *
      * @var string
