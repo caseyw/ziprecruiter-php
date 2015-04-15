@@ -106,14 +106,19 @@ class ZipRecruiterApi
      *
      * @return bool|StreamInterface|array
      */
-    public function query(Query $query)
+    public function query(Query $query, $subscriberId = null)
     {
         $data = [];
         $paging = true;
 
+        $url = 'subscriber';
+        if (!is_null($subscriberId)) {
+            $url .= '/' . $subscriberId . '/searches';
+        }
+
         while ($paging) {
 
-            $response = $this->client->get('subscriber', [
+            $response = $this->client->get($url, [
                 'query' => $query->toArray()
             ]);
 
@@ -131,6 +136,30 @@ class ZipRecruiterApi
         }
 
         return $data;
+    }
+
+    /**
+     * Helper to query Subscribers
+     *
+     * @param \ZipRecruiter\Query $query
+     *
+     * @return array|bool|\GuzzleHttp\Stream\StreamInterface
+     */
+    public function querySubscribers(Query $query)
+    {
+        return $this->query($query);
+    }
+
+    /**
+     * Helper to query Searches
+     *
+     * @param \ZipRecruiter\Query $query
+     *
+     * @return array|bool|\GuzzleHttp\Stream\StreamInterface
+     */
+    public function queryJobSearches($subscriberId, Query $query)
+    {
+        return $this->query($query, $subscriberId);
     }
 
     /**

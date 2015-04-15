@@ -144,7 +144,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $client = $this->setUpClient($response);
 
         $api = new ZipRecruiterApi($client);
-        $resp = $api->query($query);
+        $resp = $api->querySubscribers($query);
 
         $this->assertEquals($query->getEmailMd5(), $resp[0]['email_md5']);
         $this->assertEquals($query->getDeactivationReason(), $resp[0]['deactivation_reason']);
@@ -229,7 +229,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $query->setSkip(0);
 
         $api = new ZipRecruiterApi($client);
-        $results = $api->query($query, true);
+        $results = $api->querySubscribers($query);
 
         $this->assertEquals(3, count($results));
     }
