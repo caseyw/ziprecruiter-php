@@ -268,4 +268,20 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($results['deactivation_time']);
     }
 
+    /**
+     * Test Can Enable Expand Results
+     */
+    public function testCanEnableExpandResults()
+    {
+        $client = new Client();
+        $api = new ZipRecruiterApi($client);
+        $this->assertTrue($api->isExpandedResults());
+
+        $api->disableExpandedResults();
+        $this->assertFalse($api->isExpandedResults());
+
+        $api->enableExpandedResults();
+        $this->assertTrue($api->isExpandedResults());
+    }
+
 }

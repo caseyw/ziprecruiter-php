@@ -21,6 +21,11 @@ class ZipRecruiterApi
     protected $response;
 
     /**
+     * @var bool
+     */
+    protected $expand_result = true;
+
+    /**
      * Instantiate class with minimal fields to be make valid request
      *
      * @param ClientInterface $client
@@ -89,7 +94,12 @@ class ZipRecruiterApi
             $request['create_time'] = $createTime;
         }
 
-        $this->response = $this->client->post('subscriber', ['body' => $request]);
+        $url = 'subscriber';
+        if ($this->isExpandedResults()) {
+            $url .= '?expand_results=1';
+        }
+
+        $this->response = $this->client->post($url, ['body' => $request]);
 
         if (201 == $this->response->getStatusCode()) {
             return $this->response->json();
@@ -114,6 +124,10 @@ class ZipRecruiterApi
         $url = 'subscriber';
         if (!is_null($subscriberId)) {
             $url .= '/' . $subscriberId . '/searches';
+        }
+
+        if ($this->isExpandedResults()) {
+            $url .= '?expand_results=1';
         }
 
         while ($paging) {
@@ -173,6 +187,10 @@ class ZipRecruiterApi
     {
         $url = 'subscribe/' . $id;
 
+        if ($this->isExpandedResults()) {
+            $url .= '?expand_results=1';
+        }
+
         $this->response = $this->client->delete($url);
 
         if (200 == $this->response->getStatusCode()) {
@@ -200,12 +218,12 @@ class ZipRecruiterApi
             'create_time' => $createTime,
         ];
 
-        $this->response = $this->client->post(
-            'subscriber/' . $subscriptionId . '/searches',
-            [
-                'body' => $request
-            ]
-        );
+        $url = 'subscriber/' . $subscriptionId . '/searches';
+        if ($this->isExpandedResults()) {
+            $url .= '?expand_results=1';
+        }
+
+        $this->response = $this->client->post($url, ['body' => $request]);
 
         if (201 == $this->response->getStatusCode()) {
             return $this->response->json();
@@ -214,4 +232,37 @@ class ZipRecruiterApi
         return false;
     }
 
+    /**
+     * Enable Expanded Results
+     *
+     * @return $this
+     */
+    public function enableExpandedResults()
+    {
+        $this->expand_result = true;
+
+        return $this;
+    }
+
+    /**
+     * Disable Expanded Results
+     *
+     * @return $this
+     */
+    public function disableExpandedResults()
+    {
+        $this->expand_result = false;
+
+        return $this;
+    }
+
+    /**
+     * Using expanded results?
+     *
+     * @return bool
+     */
+    public function isExpandedResults()
+    {
+        return $this->expand_result;
+    }
 }
