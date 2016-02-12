@@ -1,16 +1,15 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Ring\Client\MockHandler;
+use ZipRecruiter\Query;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
-use ZipRecruiter\Query;
+use GuzzleHttp\Message\Response;
 use ZipRecruiter\ZipRecruiterApi;
+use GuzzleHttp\Ring\Client\MockHandler;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * Setup client
      *

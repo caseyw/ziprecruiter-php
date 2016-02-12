@@ -118,7 +118,7 @@ class ZipRecruiterApi
      */
     public function query(Query $query, $subscriberId = null)
     {
-        $data = [];
+        $resp = [];
         $paging = true;
 
         $url = 'subscriber';
@@ -131,10 +131,7 @@ class ZipRecruiterApi
         }
 
         while ($paging) {
-
-            $response = $this->client->get($url, [
-                'query' => $query->toArray()
-            ]);
+            $response = $this->fetchResponse($url, $query);
 
             $json = $response->json();
 
@@ -143,13 +140,34 @@ class ZipRecruiterApi
             }
 
             foreach ($json['results'] as $result) {
-                $data[] = $result;
+                $resp[] = $result;
             }
-            $query->next();
 
+            $query->next();
         }
 
-        return $data;
+        return $resp;
+    }
+
+    /**
+     * Helper method to get results even when the world is against you... I AM NOT DRAMATIC
+     *
+     * @param string $url
+     * @param Query $query
+     *
+     * @return ResponseInterface
+     */
+    protected function fetchResponse($url, $query)
+    {
+        try {
+            $response = $this->client->get($url, [
+                'query' => $query->toArray()
+            ]);
+        } catch (\GuzzleHttp\Exception\ServerException $e) {
+            $response = $this->fetchResponse($url, $query);
+        }
+
+        return $response;
     }
 
     /**
